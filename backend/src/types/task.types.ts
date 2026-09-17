@@ -7,7 +7,8 @@ export type TaskDTO = {
     description: string|null,
     completed: boolean,
     createdAt: Date,
-    updatedAt: Date
+    updatedAt: Date,
+    userId: number
 }
 
 export type CreateTaskDTO = z.infer<typeof createTaskSchema>;

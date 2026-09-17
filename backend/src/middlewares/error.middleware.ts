@@ -9,7 +9,6 @@ export const errorMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  console.error(err);
 
   if (err instanceof ZodError) {
     res.status(400).json({
@@ -25,14 +24,23 @@ export const errorMiddleware = (
     }); return; 
   }
 
-    if (err instanceof Prisma.PrismaClientKnownRequestError) {
-        if (err.code === "P2025") {
-            res.status(404).json({
-            error: "Task not found"
-            });
-            return;
-        }
-    }
+  if (err instanceof Prisma.PrismaClientKnownRequestError) {
+      if (err.code === "P2025") {
+          res.status(404).json({
+          error: "Resource not found"
+          });
+          return;
+      }
+  }
+
+  if (err instanceof Prisma.PrismaClientKnownRequestError) {
+      if (err.code === "P2002") {
+          res.status(409).json({
+          error: "Registered email address"
+          });
+          return;
+      }
+  }
 
   res.status(500).json({
     error: "Internal Server Error"

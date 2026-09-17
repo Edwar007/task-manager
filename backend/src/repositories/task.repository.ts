@@ -1,31 +1,38 @@
 import { prisma } from "../lib/prisma.js";
 import { CreateTaskDTO, UpdateTaskDTO, TaskDTO } from "../types/task.types.js";
 
-export const getTaskId = (id: number): Promise<TaskDTO | null> => {
+export const getTaskId = (id: number, userId:number): Promise<TaskDTO | null> => {
   return prisma.task.findUnique({
     where: {
-      id
+      id,
+      userId
     }
   });
 };
 
-export const getAllTasks = (): Promise<TaskDTO[]> => {
-  return prisma.task.findMany();
+export const getAllTasks = (userId: number): Promise<TaskDTO[]> => {
+  return prisma.task.findMany({
+    where:{
+      userId
+    }
+  });
 };
 
-export const createTask = (data: CreateTaskDTO): Promise<TaskDTO>  => {
+export const createTask = (data: CreateTaskDTO, userId: number): Promise<TaskDTO>  => {
   return prisma.task.create({
     data: {
       title: data.title,
-      description: data.description
+      description: data.description,
+      userId
     }
   });
 };
 
-export const updateTask = (id:number, data:UpdateTaskDTO): Promise<TaskDTO>  =>{
+export const updateTask = (id:number, data:UpdateTaskDTO, userId: number): Promise<TaskDTO>  =>{
   return prisma.task.update({
     where:{
-      id
+      id,
+      userId
     },
     data: {
       ...(data.title !== undefined && { title: data.title }),
@@ -35,10 +42,11 @@ export const updateTask = (id:number, data:UpdateTaskDTO): Promise<TaskDTO>  =>{
   });
 };
 
-export const deleteTask =(id:number) => {
+export const deleteTask =(id:number,  userId: number) => {
   return prisma.task.delete({
     where: {
-      id
+      id,
+      userId
     }
   });
 };
